@@ -155,10 +155,7 @@ function owlcarousel_initiate_instance($instance, $carousel) {
   drupal_add_js(array(
     'owlcarousel' => array(
       $carousel => array(
-        'settings' => $settings,
-        'views' => array(
-          'ajax_pagination' => variable_get_value('owlcarousel_override_ajax_pagination_' . $instance)
-        ),
+        'settings' => $settings
       )
     ),
   ), 
