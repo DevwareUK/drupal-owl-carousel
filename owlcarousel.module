@@ -4,23 +4,10 @@
  * @file
  * owlcarousel.module
  *
- * Change Log
- * - Clean up of carousel theme declarations
- * - Improved manually invoking Owl Carousel
- *   - Renamed owlcarousel_initiate_instance to owlcarousel_settings;
- *     which is now invoked via a renderable array.
- *   - Support for passing settings array via owlcarousel_settings()
- * - Improved theme handling
- * - Removed theme tpl files in favour of returning a renderable array
- * - Added theme wrapper
- * - Added #pre_render cache support for carousel HTML output & settings
- * - Added debug mode to disable caching methods
- * - Added new hook, hook_owlcarousel_pre_render_alter()
- *
  * @todo,
- * Improve variable admin management
- * Improve responsive variable management
- * Allow options to be passed to responsive breakpoints
+ *  Improve variable admin management
+ *  Improve responsive variable management
+ *  Allow options to be passed to responsive breakpoints
  */
 
 /**
