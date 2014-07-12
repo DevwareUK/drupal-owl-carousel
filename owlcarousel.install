@@ -18,7 +18,6 @@ function owlcarousel_install() {
  */
 function owlcarousel_uninstall() {
   $query = 'SELECT name FROM {variable} WHERE name LIKE :name';
-  // @todo, add like for owlcarousel_settings_
   $results = db_query($query, array(':name' => db_like('owlcarousel_') . '%'))->fetchAll();
 
   foreach ($results as $result) {

@@ -59,7 +59,7 @@ function owlcarousel_settings_form() {
     }
 
     // List per instance variables.
-   $build['groups'][$instance]['list'] = owlcarousel_variable_admin_group_list($instance_variables, $instance);
+    $build['groups'][$instance]['list'] = owlcarousel_variable_admin_group_list($instance_variables, $instance);
   }
 
   // Add & remove instance settings.
@@ -86,14 +86,70 @@ function owlcarousel_settings_form() {
     '#value' => t('Add group'),
     '#submit' => array('owlcarousel_variable_settings_import_form_submit'),
   );
-  $build['groups']['owlcarousel_settings_add']['actions']['import'] = array(
-    '#type' => 'markup',
-    '#markup' => l(t('Import'), 'admin/config/user-interface/owlcarousel/import', array('attributes' => array(
-      'class' => array('button')
-    ))),
-  );
 
   return $build;
+}
+
+/**
+ * Global Owl Carousel settings.
+ */
+function owlcarousel_global_settings_form($form, $form_state) {
+  $form['#submit'][] = 'owlcarousel_global_settings_form_submit';
+
+  $form['settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Settings'),
+  );
+  $form['settings']['owlcarousel_responsive'] = array(
+    '#type' => 'select',
+    '#title' => t('Responsive breakpoints'),
+    '#options' => array(
+      0 => t('None'),
+      1 => 1,
+      2 => 2,
+      3 => 3,
+      4 => 4,
+      5 => 5,
+      6 => 6,
+      7 => 7,
+      8 => 8,
+      9 => 9,
+      10 => 10
+    ),
+    '#description' => t('Set the number of responsive breakpoint variables. Please see, http://www.owlcarousel.owlgraphic.com/demos/responsive.html.'),
+    '#default_value' => variable_get('owlcarousel_responsive', 3),
+  );
+  $form['settings']['owlcarousel_debug_mode'] = array(
+    '#type' => 'select',
+    '#title' => t('Debug mode'),
+    '#options' => array(
+      0 => t('No'),
+      1 => t('Yes'),
+    ),
+    '#description' => t('Turning debug mode on will disable carousel theme cache. Warning; on production sites this should always be disabled.'),
+    '#default_value' => variable_get('owlcarousel_debug_mode', 0),
+  );
+  $form['settings']['owlcarousel_cache_interval'] = array(
+    '#type' => 'select',
+    '#title' => t('Cache interval'),
+    '#options' => array(
+      60 => t('Every minute'),
+      3600 => t('Every hour'),
+      86400 => t('Every day'),
+      604800 => t('Every week'),
+    ),
+    '#description' => t('Set cache expire interval.'),
+    '#default_value' => variable_get('owlcarousel_cache_interval', 3600),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Additional submit handler for global settings form.
+ */
+function owlcarousel_global_settings_form_submit($form, $form_state) {
+  cache_clear_all('*', 'cache_variable', TRUE);
 }
 
 /**
@@ -198,7 +254,53 @@ function owlcarousel_instance_settings_form($instance) {
 function owlcarousel_variable_settings_submit($form, $form_state) {
   // Clear settings cache.
   $instance = str_replace('-', '_', $form_state['build_info']['args'][1]);
-  cache_clear_all('owlcarousel_' . $instance, 'cache', TRUE); 
+
+  // @todo, only clear our cache bins.
+  cache_clear_all('*', 'cache', TRUE);
+}
+
+/**
+ * Implements hook_variable_settings_form_alter().
+ */
+function owlcarousel_ui_variable_settings_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form_state['build_info']['args'][0]) && $form_state['build_info']['args'][0] == 'owlcarousel') {
+    $instance = $form_state['build_info']['args'][1];
+
+    // Include additional submit handler to update settings cache.
+    $form['#submit'][] = 'owlcarousel_variable_settings_submit';
+
+    // This needs a graceful solution... =/
+    $settings = owlcarousel_ui_build_instance_settings($instance, $form['#variable_edit_form']);
+    foreach ($form as $key => $component) {
+      // Group variables into fieldsets by type.
+      // we need @https://www.drupal.org/node/1897462
+      // $types = array('string', 'number', 'boolean', 'array');
+
+      if (strpos($key, '[instance_id]') !== FALSE) {
+        $form[$key] = $settings[$key];
+      }
+    }
+  }
+}
+
+/**
+ * Format variable settings form to only display our
+ * instance variables.
+ */
+function owlcarousel_ui_build_instance_settings($instance, $settings) {
+  module_load_include('form.inc', 'variable');  
+
+  foreach ($settings as $key => $setting) {
+    $variable = variable_get_child($setting, $instance);
+    $form[$setting][$variable['name']] = variable_form_element($variable);
+
+    if ($setting == 'owlcarousel_nav_text_[instance_id]') {
+      $form[$setting][$variable['name']][0]['#title'] = t('Previous');
+      $form[$setting][$variable['name']][1]['#title'] = t('Next');
+    }
+  }
+
+  return $form;
 }
 
 /**
@@ -206,7 +308,7 @@ function owlcarousel_variable_settings_submit($form, $form_state) {
  */
 function owlcarousel_export_instance_settings($instance) {
   require_once(DRUPAL_ROOT . '/includes/utility.inc');
-  $variables = _owlcarousel_return_carousel_instance_settings($instance);
+  $variables = owlcarousel_load_settings($instance);
 
   $form['container'] = array(
     '#type' => 'fieldset',

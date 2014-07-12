@@ -58,6 +58,7 @@ class owlcarousel_views_plugin_style_owlcarousel extends views_plugin_style {
   function render() {
     $id = drupal_html_id('owl-carousel-' . $this->view->current_display . $this->view->vid);
     $this->options['id']['default'] = $id;
+
     // Group results.
     $rows = $this->render_grouping($this->view->result, $this->options['grouping']);
 

@@ -5,5 +5,3 @@ package = Owl Carousel
 
 dependencies[] = libraries
 dependencies[] = jquery_update
-
-
