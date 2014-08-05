@@ -127,7 +127,7 @@ function owlcarousel_global_settings_form($form, $form_state) {
       1 => t('Yes'),
     ),
     '#description' => t('Turning debug mode on will disable carousel theme cache. Warning; on production sites this should always be disabled.'),
-    '#default_value' => variable_get('owlcarousel_debug_mode', 0),
+    '#default_value' => variable_get('owlcarousel_debug_mode', 1),
   );
   $form['settings']['owlcarousel_cache_interval'] = array(
     '#type' => 'select',

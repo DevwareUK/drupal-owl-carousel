@@ -88,13 +88,16 @@ function owlcarousel_fields_field_formatter_view($entity_type, $entity, $field, 
   $element = array();
   $settings = $display['settings'];
 
+  // Due to caching logic.
+  $id = entity_extract_ids($entity_type, $entity);
+
   // Format carousel settings.
   $items_group = FALSE;
   $settings_group = array(
     'instance' => $settings['settings_group'],
     'attributes' => array(
       'id' => array(
-        'default' => drupal_html_id('owlcarousel_fields_' . $instance['id'])
+        'default' => drupal_html_id('owlcarousel_fields_' . $instance['id'] . '_' . reset($id))
       ),
     ),
   );

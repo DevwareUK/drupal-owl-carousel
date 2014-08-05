@@ -38,7 +38,7 @@ function theme_owlcarousel($variables) {
     '#pre_render' => array('owlcarousel_pre_render_cache'),
   );
 
-  $debug = variable_get('owlcarousel_debug_mode', FALSE);
+  $debug = variable_get('owlcarousel_debug_mode', TRUE);
   if (!$debug) {
     $output += array(
       '#cache' => array(
@@ -133,5 +133,5 @@ function theme_owlcarousel_list(&$variables) {
  * Theme declaration for carousel items.
  */
 function theme_owlcarousel_list_item(&$variables) {
-  return '<div class="' . $variables['class'] . '">' . $variables['item'] . "</div>";
+  return '<div class="' . $variables['class'] . '">' . $variables['item'] . '</div>';
 }
