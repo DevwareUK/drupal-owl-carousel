@@ -14,7 +14,7 @@ function owlcarousel_fields_field_formatter_info() {
       'label' => t('Owl Carousel'),
       'field types' => array('image', 'text', 'text_long', 'text_with_summary'),
       'settings'  => array(
-        'settings_group' => 'default',
+        'settings_group' => 'owlcarousel_settings_default',
         'image_style' => 'large',
         'trim_length' => '',
       ),
