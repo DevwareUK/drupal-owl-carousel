@@ -11,6 +11,7 @@
 function template_process_owlcarousel(&$variables) {
   $instance = $variables['settings']['attributes']['id']['default'];
   $variables['settings']['attributes']['id'] = $instance;
+  $variables['settings']['attributes']['class'][] = 'owl-carousel';
 }
 
 /**

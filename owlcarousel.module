@@ -5,9 +5,10 @@
  * owlcarousel.module
  *
  * @todo,
- *  Improve variable admin management
- *  Improve responsive variable management
- *  Allow options to be passed to responsive breakpoints
+ *  Theme responsive administration.
+ *  Ignore responsive attributes which are same as parent.
+ *  Test lazyLoad class support.
+ *  Responsive base element support.
  */
 
 /**
@@ -38,7 +39,7 @@ function owlcarousel_theme() {
  * Implements hook_library().
  */
 function owlcarousel_library() {
-  $library = libraries_get_path('owl.carousel');
+  $library = libraries_get_path('owlcarousel');
 
   $libraries['owlcarousel'] = array(
     'title' => 'Owl Carousel',
@@ -50,10 +51,14 @@ function owlcarousel_library() {
       ),
     ),
     'css' => array(
-      $library . '/assets/owl.carousel.css' => array(
+      $library . '/assets/owl.carousel.min.css' => array(
         'type' => 'file',
         'media' => 'screen',
       ),
+      $library . '/assets/owl.theme.default.min.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      )
     ),
   );
 
@@ -70,10 +75,26 @@ function owlcarousel_library() {
  *  Either managed settings id or array of settings.
  */
 function owlcarousel_settings($instance, $settings) {
+  // Temporary warning for 2.x users, remove before RC1.
+  $library = libraries_get_path('owlcarousel');
+  if (!file_exists($library . '/owl.carousel.min.js')) {
+    drupal_set_message('Owl Carousel path folder has changed, please update folder name from owl.carousel to owlcarousel.', 'warning');
+  }
+
+  // Load responsive settings.
+  $breakpoint_settings = array();
+  $breakpoints = owlcarousel_responsive_instance_callback_list($settings);
+  foreach ($breakpoints as $breakpoint) {
+    $breakpoint_settings[str_replace($settings . '_', '', $breakpoint)] = owlcarousel_load_settings($breakpoint);
+  }
+
   // Load carousel settings from the instance id.
   if (is_string($settings)) {
     $settings = owlcarousel_load_settings($settings);
   }
+
+  // Merge responsive (breakpoint) settings into settings.
+  $settings['responsive'] = $breakpoint_settings;
 
   // Group settings before alter.
   $group = array(
@@ -136,7 +157,6 @@ function owlcarousel_load_settings($instance) {
       'dragEndSpeed' => owlcarousel_get('owlcarousel_drag_end_speed_', $instance) ? (int)owlcarousel_get('owlcarousel_drag_end_speed_', $instance) : FALSE,
       'callbacks' => (boolean)owlcarousel_get('owlcarousel_callbacks_', $instance),
       'responsiveRefreshRate' => (int)owlcarousel_get('owlcarousel_responsive_refresh_rate_', $instance),
-      'responsiveBaseElement' => owlcarousel_get('owlcarousel_responsive_base_element_', $instance),
       'responsiveClass' => (boolean)owlcarousel_get('owlcarousel_responsive_class_', $instance),
       'video' => (boolean)owlcarousel_get('owlcarousel_video_', $instance),
       'videoHeight' => owlcarousel_get('owlcarousel_video_height_', $instance) ? (int)owlcarousel_get('owlcarousel_video_height_', $instance) : FALSE,
@@ -151,22 +171,6 @@ function owlcarousel_load_settings($instance) {
       'navContainer' => owlcarousel_get('owlcarousel_nav_container_', $instance) ? owlcarousel_get('owlcarousel_nav_container_', $instance) : FALSE,
       'dotsContainer' => owlcarousel_get('owlcarousel_dots_container_', $instance) ? owlcarousel_get('owlcarousel_dots_container_', $instance) : FALSE
     );
-
-    // Responsive items.
-    $responsive_items = FALSE;
-    for ($i = 0; $i < variable_get('owlcarousel_responsive', 0); $i++) {
-      $width = (int)owlcarousel_get('owlcarousel_responsive_', $i . '_' . $instance . '_width');
-      $items = (int)owlcarousel_get('owlcarousel_responsive_', $i . '_' . $instance . '_items');
-
-      $responsive_items['responsive'][$width] = array(
-        'items' => $items,
-      );
-    }
-
-    // Apply responsive options.
-    if ($responsive_items) {
-      $settings += $responsive_items;
-    }
 
     // Update settings cache.
     cache_set($instance, $settings, 'cache');
@@ -189,9 +193,10 @@ function owlcarousel_get($name, $instance) {
 }
 
 /**
- * Return array with key pair.
+ * Return Owl Carousel instance settings list.
  */
 function owlcarousel_instance_callback_list() {
+  $content = array();
   $instances = _owlcarousel_return_instances();
 
   // Format array as callback option list.
@@ -203,11 +208,41 @@ function owlcarousel_instance_callback_list() {
 }
 
 /**
+ * Return Owl Carousel responsive (breakpoint) settings list.
+ */
+function owlcarousel_responsive_instance_callback_list($name = FALSE) {
+  $content = array();
+  $instances = _owlcarousel_return_instances_name($name ? $name : 'owlcarousel_settings_');
+
+  // Format array as callback option list.
+  foreach ($instances as $instance) {
+    if (is_numeric(substr($instance->name, -1, 1))) {
+      $content[$instance->name] = $instance->name;
+    }
+  }
+
+  return $content;
+}
+
+/**
  * Helper function, return active instances by name.
  */
 function _owlcarousel_return_instances() {
+  $results = &drupal_static(__FUNCTION__);
+
+  if (!isset($results)) {
+    $results = _owlcarousel_return_instances_name('owlcarousel_settings_');
+  }
+
+  return $results;
+}
+
+/**
+ * Helper function, query active settings groups by name.
+ */
+function _owlcarousel_return_instances_name($name) {
   $query = 'SELECT name FROM {variable} WHERE name LIKE :name';
-  $results = db_query($query, array(':name' => db_like('owlcarousel_settings_') . '%'))->fetchAll();
+  $results = db_query($query, array(':name' => db_like($name) . '%'))->fetchAll();
 
   return $results;
 }

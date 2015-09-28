@@ -21,7 +21,7 @@ function owlcarousel_requirements($phase) {
 
   $requirements = array();
   if ($phase == 'runtime') {
-    $library = libraries_get_path('owl.carousel');
+    $library = libraries_get_path('owlcarousel');
     $path = $library . '/owl.carousel.min.js';
 
     $requirements['owlcarousel'] = array(

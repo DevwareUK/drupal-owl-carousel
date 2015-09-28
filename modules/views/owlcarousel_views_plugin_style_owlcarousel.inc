@@ -15,8 +15,8 @@ class owlcarousel_views_plugin_style_owlcarousel extends views_plugin_style {
    */
   function option_definition() {
     $options = parent::option_definition();
+    $options['instance'] = array('default' => 'owlcarousel_settings_default');
 
-    $options['instance'] = array('default' => 'default');
     return $options;
   }
 
@@ -25,8 +25,15 @@ class owlcarousel_views_plugin_style_owlcarousel extends views_plugin_style {
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-    // Carousel instances.
+
+    // Carousel instance settings.
+    $options = array();
     $keys = owlcarousel_instance_callback_list();
+    foreach ($keys as $key) {
+      if (!is_numeric(substr($key, -1, 1))) {
+        $options[$key] = $key;
+      }
+    }
 
     $form['settings'] = array(
       '#type' => 'fieldset',
@@ -36,7 +43,7 @@ class owlcarousel_views_plugin_style_owlcarousel extends views_plugin_style {
       '#title' => t('Options Set'),
       '#type' => 'select',
       '#description' => t('Settings to apply to this carousel instance.'),
-      '#options' => $keys,
+      '#options' => $options,
       '#default_value' => $this->options['instance'],
     );
   }

@@ -14,13 +14,6 @@ function owlcarousel_variable_type_info() {
     'options callback' => 'owlcarousel_instance_callback_list',
     'type' => 'select',
   );
-  $type['width_items'] = array(
-    'title' => t('Browser Items'),
-    'multiple' => array('width' => t('Width'), 'items' => t('Items')),
-    'build callback' => 'owlcarousel_variable_build_browser_width',
-    'localize' => TRUE,
-    'type' => 'multiple',
-  );
 
   return $type;
 }
@@ -56,7 +49,7 @@ function owlcarousel_variable_info($options) {
   $variable['owlcarousel_margin_[instance_id]'] = array(
     'type' => 'multiple',
     'title' => t('Margin', array(), $options),
-    'description' => t('mMrgin-right(px) on item.', array(), $options),
+    'description' => t('Margin-right(px) on item.', array(), $options),
     'repeat' => array(
       'type' => 'number',
       'default' => 0,
@@ -374,22 +367,6 @@ function owlcarousel_variable_info($options) {
     ),
     'group' => 'owlcarousel',
   );
-  // @todo, responsive option.
-  for ($i = 0; $i < variable_get('owlcarousel_responsive', 3); $i++) {
-    $variable['owlcarousel_responsive_' . $i . '_[instance_id]_[itemwidth_part]'] = array(
-      'type' => 'multiple',
-      'title' => t('Responsive @number', array('@number' => $i), $options),
-      'description' => t('Responsive width & item options can be used for setting media queries breakpoints.', array(), $options),
-      'repeat' => array(
-        'type' => 'width_items',
-        'default' => array(
-          'width' => t(480, array(), $options),
-          'items' => t(2, array(), $options),
-        ),
-      ),
-      'group' => 'owlcarousel',
-    );
-  }
   $variable['owlcarousel_responsive_refresh_rate_[instance_id]'] = array(
     'type' => 'multiple',
     'title' => t('Responsive Refresh Rate', array(), $options),
@@ -540,34 +517,6 @@ function owlcarousel_variable_info($options) {
     ),
     'group' => 'owlcarousel',
   );
-
-  return $variable;
-}
-
-/**
- * Variable build callback for browser/items.
- */
-function owlcarousel_variable_build_browser_width($variable, $options = array()) {
-  $index = str_replace('[instance_id]', $variable['index'], $variable['parent']);
-  $name = str_replace('[itemwidth_part]', '', $index);
-
-  foreach ($variable['multiple'] as $key => $child) {
-    $repeat_name = $name . $key;
-
-    // Apply helpful defaults for responsive items.
-    if (strpos($repeat_name, '1') !== FALSE) {
-      $variable['default']['items'] = 3;
-      $variable['default']['width'] = 780;
-    }
-
-    $variable['name'] = $repeat_name;
-    $variable['children'][$repeat_name]['title'] = $child;
-    $variable['children'][$repeat_name]['index'] = $key;
-    $variable['children'][$repeat_name]['type'] = 'number';
-    $variable['children'][$repeat_name]['default'] = $variable['default'][$key];
-
-    $variable = variable_build_multiple($variable, $options);
-  }
 
   return $variable;
 }
