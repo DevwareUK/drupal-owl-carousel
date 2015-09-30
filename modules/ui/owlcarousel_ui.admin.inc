@@ -21,35 +21,61 @@ function owlcarousel_settings_form() {
 
   // Per instance setting variables.
   foreach ($instances as $instance) {
-    foreach ($group_variables as $var) {
-      $instance_variables[$instance][$var['name']] = variable_get_child($var['name'], $instance);
-    }
-
     // Only display parent groups.
     if (!is_numeric(substr($instance, -1, 1))) {
+      foreach ($group_variables as $var) {
+        $instance_variables[$instance][$var['name']] = variable_get_child($var['name'], $instance);
+      }
+
       $build['groups'][$instance] = array(
         '#type' => 'fieldset',
-        '#title' => $instance,
+        '#title' => str_replace('owlcarousel_settings_', '', $instance),
         '#collapsible' => TRUE,
         '#collapsed' => TRUE,
         '#id' => $instance,
       );
       $build['groups'][$instance]['responsive'] = array(
         '#type' => 'fieldset',
-        '#title' => t('Responsive settings'),
-        '#weight' => -1,
+        '#title' => t('Responsive Settings'),
       );
-      // @todo, allow responsive settings to be viewed without editing.
-      // @todo, theme as horizontal tabs or s/m.
+      $build['groups'][$instance]['responsive']['tabs'] = array(
+        '#type' => 'horizontal_tabs',
+      );
+      // @todo, theme these better... :'(.
+      // @todo, only display values which are different from parent group.
       $breakpoints = owlcarousel_responsive_instance_callback_list($instance);
       foreach ($breakpoints as $breakpoint) {
-        $build['groups'][$instance]['responsive'][$breakpoint] = array(
-          '#type' => 'container'
+        foreach ($group_variables as $var) {
+          $breakpoint_variables[$breakpoint][$var['name']] = variable_get_child($var['name'], $breakpoint);
+        }
+
+        $build['groups'][$instance]['responsive']['tabs'][$breakpoint] = array(
+          '#type' => 'fieldset',
+          '#title' => str_replace($instance . '_', '', $breakpoint),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#id' => $breakpoint,
         );
-        $build['groups'][$instance]['responsive'][$breakpoint]['item'] = array(
+        $build['groups'][$instance]['responsive']['tabs'][$breakpoint]['actions'] = array(
+          '#type' => 'container',
+          '#weight' => 10,
+        );
+        $build['groups'][$instance]['responsive']['tabs'][$breakpoint]['actions']['edit'] = array(
           '#type' => 'markup',
-          '#markup' => l(str_replace($instance . '_', '', $breakpoint), 'admin/config/user-interface/owlcarousel/' . $breakpoint)
+          '#markup' => l(t('Edit'), 'admin/config/user-interface/owlcarousel/' . $breakpoint, array('attributes' => array(
+            'class' => array('button')
+          ))),
+          '#weight' => 1,
         );
+        $build['groups'][$instance]['responsive']['tabs'][$breakpoint]['actions']['delete'] = array(
+          '#type' => 'markup',
+          '#markup' => l(t('Delete'), 'admin/config/user-interface/owlcarousel/' . $breakpoint . '/delete/nojs', array('attributes' => array(
+            'class' => array('button', 'use-ajax')))),
+          '#weight' => 3,
+        );
+
+        // List responsive settings.
+        $build['groups'][$instance]['responsive']['tabs'][$breakpoint]['list'] = owlcarousel_variable_admin_group_list($breakpoint_variables, $breakpoint);
       }
       $build['groups'][$instance]['responsive']['actions'] = array(
         '#type' => 'container'
@@ -408,7 +434,10 @@ function owlcarousel_instance_settings_form($instance) {
 /**
  * Additional variable settings form submit handler.
  */
-function owlcarousel_variable_settings_submit($form, $form_state) {
+function owlcarousel_variable_settings_submit($form, &$form_state) {
+  // Back to the overview.
+  $form_state['redirect'] = 'admin/config/user-interface/owlcarousel';
+
   // Clear settings cache.
   cache_clear_all('*', 'cache', TRUE);
 }
@@ -495,8 +524,10 @@ function owlcarousel_delete_instance_settings($id = NULL, $js) {
       $message = drupal_set_message($message, 'status');
 
       $commands = array();
-      $commands[] = ajax_command_remove($id);
-      $commands[] = ajax_command_remove('#owlcarousel-settings-form .vertical-tab-button.selected');
+      $commands[] = ajax_command_remove('#' . $id);
+      if (!is_numeric(substr($id, -1, 1))) {
+        $commands[] = ajax_command_remove('#owlcarousel-settings-form .vertical-tab-button.selected');
+      }
       $commands[] = ajax_command_prepend('#page', theme('status_messages', $message));
       $page = array('#type' => 'ajax', '#commands' => $commands);
       ajax_deliver($page);
