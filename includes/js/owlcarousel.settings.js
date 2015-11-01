@@ -23,8 +23,11 @@
           images.addClass('owl-lazy');
         }
 
-        // Attach instance settings.
-        if (!owl.hasClass('disabled')) {
+        if (owl.hasClass('disabled')) {
+          owl.show();
+        }
+        else {
+          // Attach instance settings.
           owl.owlCarousel(settings.owlcarousel[carousel].settings);
         }
       }
