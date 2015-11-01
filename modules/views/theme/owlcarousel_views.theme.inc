@@ -18,9 +18,10 @@ function template_process_owlcarousel_views(&$variables) {
 
     foreach ($variables['rows'] as $id => $row) {
       $view->row_index = $id;
-      $item['row'] = $row_plugin->render($row);
 
-      $items[] = $item;
+      if ($item['row'] = $row_plugin->render($row)) {
+        $items[] = $item;
+      }
     }
 
     // Attribute id.
@@ -30,8 +31,6 @@ function template_process_owlcarousel_views(&$variables) {
     $variables['settings'] = $settings;
     $variables['items'] = $items;
   }
-
-  return $variables;
 }
 
 /**

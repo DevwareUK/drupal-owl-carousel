@@ -24,7 +24,9 @@
         }
 
         // Attach instance settings.
-        owl.owlCarousel(settings.owlcarousel[carousel].settings);
+        if (!owl.hasClass('disabled')) {
+          owl.owlCarousel(settings.owlcarousel[carousel].settings);
+        }
       }
     }
   };
