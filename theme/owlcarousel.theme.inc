@@ -76,11 +76,12 @@ function owlcarousel_pre_render_cache($element) {
     '#settings' => $element['#output']['settings']
   );
 
-  // Build wrapper.
-  $build = owlcarousel_build($output);
-
   // Element output /w attached.
   $element['#markup'] = owlcarousel_build($output);
+
+  // Provide alter before carousel is rendered.
+  drupal_alter('owlcarousel_pre_render', $element);
+
   $element['#children'] = drupal_render($element['#markup']);
   $element['#attached'] = array(
     'js' => array(
@@ -103,9 +104,6 @@ function owlcarousel_pre_render_cache($element) {
       )
     ),
   );
-
-  // Provide alter before carousel is rendered.
-  drupal_alter('owlcarousel_pre_render', $element);
 
   return $element;
 }
