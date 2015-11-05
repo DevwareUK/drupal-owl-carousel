@@ -41,6 +41,12 @@ function owlcarousel_theme() {
 function owlcarousel_library() {
   $library = libraries_get_path('owlcarousel');
 
+  // Check for CSS file type.
+  $css = $library . '/assets/owl.carousel.min.css';
+  if (!file_exists($css)) {
+    $css = $library . '/assets/owl.carousel.css';
+  }
+
   $libraries['owlcarousel'] = array(
     'title' => 'Owl Carousel',
     'website' => 'http://owlgraphic.com/owlcarousel',
@@ -51,7 +57,7 @@ function owlcarousel_library() {
       ),
     ),
     'css' => array(
-      $library . '/assets/owl.carousel.min.css' => array(
+      $css => array(
         'type' => 'file',
         'media' => 'screen',
       ),
