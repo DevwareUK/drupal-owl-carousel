@@ -209,6 +209,7 @@ function owlcarousel_fields_field_formatter_view($entity_type, $entity, $field, 
           $items_group[$delta]['row'] = drupal_render($output);
         }
       }
+    break;
     case 'paragraphs':
       $view_mode = !empty($settings['view_mode']) ? $settings['view_mode'] : 'full';
 
