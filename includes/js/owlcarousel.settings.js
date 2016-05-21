@@ -8,7 +8,6 @@
   Drupal.behaviors.owlcarousel = {
     attach: function(context, settings) {
       for (var carousel in settings.owlcarousel) {
-        settings.owlcarousel.instance = carousel;
         this.attachInit(carousel, settings.owlcarousel);
       }
     },
@@ -21,7 +20,7 @@
      */
     attachInit: function(carousel, settings) {
       var element = $('#' + carousel);
-      this.attachOwlCarousel(element, settings[settings.instance].settings);
+      this.attachOwlCarousel(element, settings[carousel].settings);
     },
 
     /**
