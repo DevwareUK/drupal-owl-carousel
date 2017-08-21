@@ -1,0 +1,8 @@
+name: owlcarousel
+type: module
+description: OWL Carousel
+core: 8.x
+package: Owl Carousel
+dependencies:
+  - field
+  - image
