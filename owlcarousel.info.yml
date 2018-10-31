@@ -4,5 +4,5 @@ description: OWL Carousel
 core: 8.x
 package: Owl Carousel
 dependencies:
-  - field
-  - image
+  - drupal:field
+  - drupal:image
