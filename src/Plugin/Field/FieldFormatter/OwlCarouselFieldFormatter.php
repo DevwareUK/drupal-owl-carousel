@@ -365,5 +365,5 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
     // should equal the output, including newlines.
     return nl2br(Html::escape($item->value));
   }
-
 }
+
