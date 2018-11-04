@@ -1,6 +1,6 @@
-name: owlcarousel
+name: Owl Carousel
 type: module
-description: OWL Carousel
+description: Owl Carousel jQuery plugin integration module.
 core: 8.x
 package: Owl Carousel
 dependencies:
