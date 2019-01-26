@@ -196,4 +196,3 @@ function _owlcarousel_string_to_array($str) {
 
   return $str;
 }
-
