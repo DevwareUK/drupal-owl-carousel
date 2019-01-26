@@ -343,7 +343,7 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
       $settings[$k] = isset($s) ? $s : $settings[$k];
     }
     return [
-      '#theme' => 'owl',
+      '#theme' => 'owlcarousel',
       '#items' => $elements,
       '#settings' => $settings,
       '#attached' => ['library' => ['owlcarousel/owlcarousel']],
