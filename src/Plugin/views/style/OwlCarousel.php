@@ -214,7 +214,7 @@ class OwlCarousel extends StylePluginBase {
         'fade' => $this->t('Fade'),
         'backSlide' => $this->t('Back Slide'),
         'goDown' => $this->t('Go Down'),
-        'scaleUp' => $this->t('ScaleUp'),
+        'fadeUp' => $this->t('Fade Up'),
       ],
       '#title' => $this->t('Transition Style'),
       '#default_value' => $this->options['transitionStyle'],
