@@ -133,7 +133,6 @@ function theme_owlcarousel_list(&$variables) {
         $output .= theme('owlcarousel_list_item', array(
           'item' => $item['row'],
           'class' => drupal_html_class('item-' . $i) . ' ' . drupal_html_class($striping),
-          'hash' => drupal_html_class('slide-' . $i),
         ));
       }
     }
@@ -146,5 +145,5 @@ function theme_owlcarousel_list(&$variables) {
  * Theme declaration for carousel items.
  */
 function theme_owlcarousel_list_item(&$variables) {
-  return '<div class="' . $variables['class'] . '" data-hash="' . $variables['hash'] . '">' . $variables['item'] . '</div>';
+  return '<div class="' . $variables['class'] . '">' . $variables['item'] . '</div>';
 }
