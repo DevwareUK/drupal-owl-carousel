@@ -72,6 +72,23 @@ function owlcarousel_library() {
 }
 
 /**
+ * Implementation of hook_features_api().
+ *
+ * Allow exporting of groups settings  by the Features module.
+ */
+function owlcarousel_features_api() {
+  return array(
+    'owlcarousel_group' => array(
+      'name' => t('Owlcarousel settings group'),
+      'feature_source' => TRUE,
+      'default_hook' => 'owlcarousel_group_defaults',
+      'default_file' => FEATURES_DEFAULTS_INCLUDED,
+      'file' => drupal_get_path('module', 'owlcarousel') . '/owlcarousel.features.inc',
+    )
+  );
+}
+
+/**
  * Load Owl Carousel settings.
  *
  * @param string $instance
@@ -183,6 +200,38 @@ function owlcarousel_load_settings($instance) {
   }
 
   return $settings;
+}
+
+/**
+ * Load all groups settings. Just load one group if $name is passed in.
+ */
+function owlcarousel_group_load($name = NULL){
+  $groups = array();
+  if(empty($groups)){
+    $groups_result = db_select('variable', 'v')->fields('v');
+    if($name){
+      $groups_result =  $groups_result->condition('name', $name);
+    }
+    else{
+      $groups_result =  $groups_result->condition('name', db_like('owlcarousel_settings_') . '%','LIKE');
+    }
+
+    $groups_result = $groups_result->execute();
+
+    foreach ($groups_result as $data){
+      $data->value = unserialize($data->value);
+      $data->settings = array();
+      $settings_result = db_select('variable', 'v')
+        ->fields('v')
+        ->condition('name', '%' . db_like($data->name), 'LIKE')
+        ->execute();
+      foreach($settings_result as $settings){
+        $data->settings[$settings->name] = unserialize($settings->value);
+      }
+      $groups[$data->name] = $data;
+    }
+  }
+  return $groups;
 }
 
 /**
