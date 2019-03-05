@@ -149,7 +149,7 @@ function owlcarousel_load_settings($instance) {
       'slideBy' => (int)owlcarousel_get('owlcarousel_slide_by_', $instance),
       'dots' => (boolean)owlcarousel_get('owlcarousel_dots_', $instance),
       'dotsEach' => owlcarousel_get('owlcarousel_dots_each_', $instance) ? owlcarousel_get('owlcarousel_dots_each_', $instance) : FALSE,
-      'dotsData' => (boolean)owlcarousel_get('owlcarousel_dots_data_', $instance),
+      'dotsData' => (boolean)owlcarousel_get('owlcarousel_dot_data_', $instance),
       'lazyLoad' => (boolean)owlcarousel_get('owlcarousel_lazy_load_', $instance),
       'lazyContent' => (boolean)owlcarousel_get('owlcarousel_lazy_content_', $instance),
       'autoplay' => (boolean)owlcarousel_get('owlcarousel_autoplay_', $instance),
