@@ -158,6 +158,7 @@ function owlcarousel_load_settings($instance) {
       'merge' => (boolean)owlcarousel_get('owlcarousel_merge_', $instance),
       'mergeFit' => (boolean)owlcarousel_get('owlcarousel_merge_fit_', $instance),
       'autoWidth' => (boolean)owlcarousel_get('owlcarousel_auto_width_', $instance),
+      'autoHeight' => (boolean)owlcarousel_get('owlcarousel_auto_height_', $instance),
       'startPosition' => owlcarousel_get('owlcarousel_start_position_', $instance) ? owlcarousel_get('owlcarousel_start_position_', $instance) : 0,
       'urlHashListner' => (boolean)owlcarousel_get('owlcarousel_url_hash_listner_', $instance),
       'nav' => (boolean)owlcarousel_get('owlcarousel_nav_', $instance),

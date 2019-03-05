@@ -156,6 +156,16 @@ function owlcarousel_variable_info($options) {
     ),
     'group' => 'owlcarousel',
   );
+  $variable['owlcarousel_auto_height_[instance_id]'] = array(
+    'type' => 'multiple',
+    'title' => t('Auto Height', array(), $options),
+    'description' => t('Auto slide height', array(), $options),
+    'repeat' => array(
+      'type' => 'boolean',
+      'default' => FALSE,
+    ),
+    'group' => 'owlcarousel',
+  );
   $variable['owlcarousel_start_position_[instance_id]'] = array(
     'type' => 'multiple',
     'title' => t('Start Position', array(), $options),
