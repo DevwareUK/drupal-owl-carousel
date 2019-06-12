@@ -14,6 +14,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\owlcarousel\OwlCarouselGlobal;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -62,7 +63,8 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return _owlcarousel_default_settings() + parent::defaultSettings();
+    $owlcarousel_default_settings = OwlCarouselGlobal::defaultSettings();
+    return $owlcarousel_default_settings + parent::defaultSettings();
   }
 
   /**
@@ -336,8 +338,8 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
         ],
       ];
     }
-
-    $settings = _owlcarousel_default_settings();
+    $owlcarousel_default_settings = OwlCarouselGlobal::defaultSettings();
+    $settings = $owlcarousel_default_settings;
     foreach ($settings as $k => $v) {
       $s = $this->getSetting($k);
       $settings[$k] = isset($s) ? $s : $settings[$k];
