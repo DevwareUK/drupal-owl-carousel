@@ -15,6 +15,7 @@
         }
     };
 
+    // @todo: set owlcarousel to work with multiple carousels.
     Drupal.behaviors.owlcarousel_views = {
         attach: function (context, settings) {
             var owlCarouselViews = drupalSettings.
