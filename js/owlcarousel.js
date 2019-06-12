@@ -23,7 +23,6 @@
                 items: 1
             });
 
-            console.log
         }
     }
 })(jQuery);
