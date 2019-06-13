@@ -18,11 +18,11 @@
     // @todo: set owlcarousel to work with multiple carousels.
     Drupal.behaviors.owlcarousel_views = {
         attach: function (context, settings) {
-            var owlCarouselViews = drupalSettings.
+            var owlCarouselViews = drupalSettings.owlcarousel_views;
             $('.owl-slider-wrapper').owlCarousel({
                 items: 1
             });
 
         }
     }
-})(jQuery);
+})(jQuery, Drupal, drupalSettings);

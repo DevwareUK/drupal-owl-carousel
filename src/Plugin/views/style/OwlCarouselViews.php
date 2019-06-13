@@ -64,14 +64,6 @@ class OwlCarouselViews extends StylePluginBase {
       '#default_value' => $this->options['items'],
     ];
 
-    // Fields to use.
-    $form['image'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Image'),
-      '#options' => $fields,
-      '#default_value' => $this->options['image'],
-    ];
-
 
   }
 
