@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\owlcarousel\OwlCarouselView;
+use Psy\Util\Json;
 /**
  * Prepares variables for views carousel template.
  *
@@ -13,11 +14,15 @@ use Drupal\owlcarousel\OwlCarouselView;
  */
 function template_preprocess_owlcarousel_views(array &$vars) {
   $view = $vars['view'];
+  $handler = $vars['view']->style_plugin;
+  $settings = $handler->options;
+
   $vars['id'] = OwlCarouselView::getUniqueId($view);
   $vars['attributes']['class'][] = 'owl-slider-wrapper';
+  $vars['attributes']['class'][] = $vars['id'];
   $vars['attributes']['class'][] = 'owl-carousel';
   $vars['#attached']['library'][] = 'owlcarousel/owlcarousel';
-  $vars['#attached']['drupalSettings']['owlcarousel_views'][$vars['id']] = '';
-
+  // Config set for owlcarousel.
+  // This is then accessible in JS via drupalSettings.
+  $vars['#attached']['drupalSettings']['owlcarousel_views'][$vars['id']] = JSON::encode($settings);
 }
-
