@@ -12,7 +12,7 @@ use Drupal\views\Plugin\views\style\StylePluginBase;
  * @ingroup views_style_plugins
  *
  * @ViewsStyle(
- *   id = "owlcarouselviews",
+ *   id = "owlcarousel",
  *   title = @Translation("OwlCarousel"),
  *   help = @Translation("Displays rows as OwlCarousel."),
  *   theme = "owlcarousel_views",
