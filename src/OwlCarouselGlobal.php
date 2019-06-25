@@ -13,7 +13,7 @@ class OwlCarouselGlobal {
     $settings = [
       'image_style' => '',
       'image_link' => '',
-      'items' => 5,
+      'items' => 3,
       'itemsDesktop' => '[1199,4]',
       'itemsDesktopSmall' => '[979,3]',
       'itemsTablet' => '[768,2]',
