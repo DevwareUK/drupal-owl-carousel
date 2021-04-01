@@ -224,6 +224,13 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
       '#default_value' => $this->getSetting('paginationNumbers'),
       '#description' => $this->t('Show numbers inside pagination buttons.'),
     ];
+    // PaginationThumbnails.
+    $element['paginationThumbnails'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Pagination Thumbnails'),
+      '#default_value' => $this->getSetting('paginationThumbnails'),
+      '#description' => $this->t('Show thumbnails inside pagination buttons.'),
+    ];
     // Responsive.
     $element['responsive'] = [
       '#type' => 'checkbox',
@@ -343,13 +350,69 @@ class OwlCarouselFieldFormatter extends EntityReferenceFormatterBase implements 
       $s = $this->getSetting($k);
       $settings[$k] = isset($s) ? $s : $settings[$k];
     }
-    return [
+
+    $render = [
       '#theme' => 'owlcarousel',
       '#items' => $elements,
       '#settings' => $settings,
       '#attached' => ['library' => ['owlcarousel/owlcarousel']],
     ];
 
+    // See if we need to render a carousel for thumbs.
+    if ($this->getSetting('paginationThumbnails')) {
+      $elements = [];
+
+      // Generate a new carousel for thumbs.
+      foreach ($files as $delta => $file) {
+        if (isset($link_file)) {
+          $image_uri = $file->getFileUri();
+          $url = Url::fromUri(file_create_url($image_uri));
+        }
+        $cache_tags = Cache::mergeTags($cache_tags, $file->getCacheTags());
+
+        // Extract field item attributes for the theme function, and unset them
+        // from the $item so that the field template does not re-render them.
+        $item = $file->_referringItem;
+        $item_attributes = $item->_attributes;
+        unset($item->_attributes);
+
+        $elements[$delta] = [
+          '#theme' => 'image_formatter',
+          '#item' => $item,
+          '#item_attributes' => $item_attributes,
+          // @TODO image style for thumbs...
+          '#image_style' => $image_style_setting,
+          '#url' => $url,
+          '#cache' => [
+            'tags' => $cache_tags,
+          ],
+        ];
+      }
+
+      $settings['items'] = 4;
+      $settings['itemsDesktop'] = '[1199,4]';
+      $settings['itemsDesktopSmall'] = '[979,4]';
+      $settings['itemsTablet'] = '[768,4]';
+      $settings['itemsMobile'] = '[479,4]';
+      $settings['navigation'] = 1;
+
+      $thumbs_render = [
+        '#theme' => 'owlcarousel',
+        '#items' => $elements,
+        '#settings' => $settings,
+        '#attached' => ['library' => ['owlcarousel/owlcarousel']],
+      ];
+
+      $render = [
+        '#theme' => 'owlcarousel_thumbs',
+        '#items' => [
+          'main' => $render,
+          'thumbs' => $thumbs_render,
+        ],
+      ];
+    }
+
+    return $render;
   }
 
   /**

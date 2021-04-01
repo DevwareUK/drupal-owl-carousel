@@ -32,6 +32,9 @@ function owlcarousel_theme() {
     'owlcarousel' => [
       'variables' => ['items' => NULL, 'settings' => NULL],
     ],
+    'owlcarousel_thumbs' => [
+      'variables' => ['items' => NULL],
+    ],
     'owlcarousel_views' => [
       'variables' => [],
     ],
@@ -58,6 +61,30 @@ function template_preprocess_owlcarousel(&$variables) {
       $i++;
     }
   }
+  $output = [
+    '#type' => 'markup',
+    '#markup' => $html,
+  ];
+  $variables['output'] = render($output);
+
+}
+
+
+/**
+ * Themeable for owlcarousel thumbs.
+ */
+function template_preprocess_owlcarousel_thumbs(&$variables) {
+  $items = $variables['items'];
+
+//  $settings = _owlcarousel_format_settings($variables['settings']);
+
+  $variables['attributes']['class'][] = 'owl-carousel-thumbs';
+//  $variables['attributes']['data-settings'] = json_encode($settings);
+
+  $html = '';
+  $html .= '<div class="owlcarousel-thumbs-main">' . render($items['main']) . '</div>';
+  $html .= '<div class="owlcarousel-thumbs-thumbs">' . render($items['thumbs']) . '</div>';
+
   $output = [
     '#type' => 'markup',
     '#markup' => $html,
@@ -117,6 +144,7 @@ function _owlcarousel_default_settings($key = NULL) {
     'scrollPerPage' => FALSE,
     'pagination' => TRUE,
     'paginationNumbers' => FALSE,
+    'paginationThumbnails' => FALSE,
     'responsive' => TRUE,
     'responsiveRefreshRate' => 200,
     'mouseDrag' => TRUE,
