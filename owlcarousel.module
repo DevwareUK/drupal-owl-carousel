@@ -53,20 +53,14 @@ function template_preprocess_owlcarousel(&$variables) {
   $variables['attributes']['class'][] = 'owl-carousel';
   $variables['attributes']['data-settings'] = json_encode($settings);
 
-  $html = '';
   if (!empty($items)) {
     $i = 0;
-    foreach ($items as $item) {
-      $html .= '<div class="owl-item-inner owl-item-inner' . $i . '">' . render($item) . '</div>';
+    foreach ($items as &$item) {
+      $item['#prefix'] = '<div class="owl-item-inner owl-item-inner' . $i . '">';
+      $item['#suffix'] = '</div>';
       $i++;
     }
   }
-  $output = [
-    '#type' => 'markup',
-    '#markup' => $html,
-  ];
-  $variables['output'] = render($output);
-
 }
 
 
@@ -74,23 +68,11 @@ function template_preprocess_owlcarousel(&$variables) {
  * Themeable for owlcarousel thumbs.
  */
 function template_preprocess_owlcarousel_thumbs(&$variables) {
-  $items = $variables['items'];
+  $variables['items']['main']['#prefix'] = '<div class="owlcarousel-thumbs-main">';
+  $variables['items']['main']['#suffix'] = '</div>';
 
-//  $settings = _owlcarousel_format_settings($variables['settings']);
-
-  $variables['attributes']['class'][] = 'owl-carousel-thumbs';
-//  $variables['attributes']['data-settings'] = json_encode($settings);
-
-  $html = '';
-  $html .= '<div class="owlcarousel-thumbs-main">' . render($items['main']) . '</div>';
-  $html .= '<div class="owlcarousel-thumbs-thumbs">' . render($items['thumbs']) . '</div>';
-
-  $output = [
-    '#type' => 'markup',
-    '#markup' => $html,
-  ];
-  $variables['output'] = render($output);
-
+  $variables['items']['thumbs']['#prefix'] = '<div class="owlcarousel-thumbs-thumbs">';
+  $variables['items']['thumbs']['#suffix'] = '</div>';
 }
 
 /**
