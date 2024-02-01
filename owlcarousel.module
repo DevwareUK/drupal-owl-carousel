@@ -109,11 +109,7 @@ function template_preprocess_owlcarousel_views(array &$variables) {
   $variables['attributes']['data-settings'] = json_encode($settings);
   $variables['attributes']['class'][] = 'owl-slider-wrapper';
   $variables['attributes']['class'][] = 'owl-carousel';
-
-  $attached = [
-    '#attached' => ['library' => ['owlcarousel/owlcarousel']],
-  ];
-  render($attached);
+  $variables['#attached']['library'][] = 'owlcarousel/owlcarousel';
   template_preprocess_views_view_unformatted($variables);
 }
 
